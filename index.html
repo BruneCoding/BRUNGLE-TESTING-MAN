@@ -65,8 +65,8 @@
      .sidebar {
          position: absolute;
          width: 45px;
-       height: auto;
-      min-height: 50%;
+       height: 27.5%;
+      max-height: 35%;
        border-radius: 100px;
        padding: 10px;
        color: white;
@@ -748,13 +748,14 @@ th, td {
    }
 
 
-.breh:hover {
-scale: 2;
-}
-   .timesoftables {
+   .timesoftables, .breh {
    border: 0px solid transparent;
    background: transparent;
+     width: 50px;
+     height: 50px;
+     margin-left: -5px;
    }
+  
 
    .toggle-button, dropdown {
   position: relative;
@@ -790,10 +791,10 @@ scale: 2;
   margin: 10px;
   border: 1px solid #ccc;
   cursor: pointer;
-    background: grey;
+    background: #012c22;
   border-radius: 2rem;
   width: 95%;
-      color: red;
+      color: #b91919;
     font-family: monospace;
     font-size: 0.75rem;
     font-weight: 500;
@@ -809,7 +810,7 @@ scale: 2;
   }
 
 .shop-item:hover {
-  background-color: white;
+  background-color: rgba(255,255,255,0.75);
   border: 2px solid white;
   box-shadow: 0 0 15px white;
   color: green;
@@ -817,7 +818,7 @@ scale: 2;
 }
 
 #brunglePoints, #boughtItems {
-color: green;
+color: #199b19;
 }
 
        
@@ -962,7 +963,9 @@ color: green;
          <i class="fa-solid fa-calendar" id="timetable"></i>
          </button>
          <hr>
+         <button class="timesoftables">
          <i class="fa-regular fa-money-bill-1" id="brunebot"></i>
+         </button>
        </div>
 
        <div class="open" onclick="moveBoth()">
