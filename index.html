@@ -1783,30 +1783,47 @@ function showCustomColor() {
 }
 
 function addCustomColor() {
-  var customColorInput = document.getElementById('custom-color');
-  var customColor = customColorInput.value;
-  if (/^#[0-9A-F]{6}$/i.test(customColor)) {
-      var colorCircle = document.createElement('div');
-      colorCircle.className = 'color-circle';
-      colorCircle.style.backgroundColor = customColor;
-      colorCircle.addEventListener('click', function() {
-          changeColor(customColor);
-      });
-      var addButton = document.getElementById('add-button');
-      document.getElementById('theme-changer').insertBefore(colorCircle, addButton);
-      customColorInput.value = '';
-      customColorInput.style.display = 'none';
+    var customColorInput = document.getElementById('custom-color');
+    var customColor = customColorInput.value;
+    if (/^#[0-9A-F]{6}$/i.test(customColor)) {
+        var colorCircle = document.createElement('div');
+        colorCircle.className = 'color-circle';
+        colorCircle.style.backgroundColor = customColor;
+        colorCircle.addEventListener('click', function() {
+            changeColor(customColor);
+        });
+        var addButton = document.getElementById('add-button');
+        document.getElementById('theme-changer').insertBefore(colorCircle, addButton);
+        customColorInput.value = '';
+        customColorInput.style.display = 'none';
 
-      // Retrieve existing colors array from local storage or initialize an empty array
-      var colors = JSON.parse(localStorage.getItem('customColors')) || [];
-      // Push the new color into the array
-      colors.push(customColor);
-      // Save the updated colors array to local storage
-      localStorage.setItem('customColors', JSON.stringify(colors));
-  } else {
-      alert('Please enter a valid hex color code.');
-  }
+        // Save custom color to localStorage
+        localStorage.setItem('customColor', customColor);
+    } else {
+        alert('Please enter a valid hex color code.');
+    }
 }
+
+// Function to retrieve saved custom color on page load
+function retrieveCustomColor() {
+    var savedColor = localStorage.getItem('customColor');
+    if (savedColor) {
+        var colorCircle = document.createElement('div');
+        colorCircle.className = 'color-circle';
+        colorCircle.style.backgroundColor = savedColor;
+        colorCircle.addEventListener('click', function() {
+            changeColor(savedColor);
+        });
+        var addButton = document.getElementById('add-button');
+        document.getElementById('theme-changer').insertBefore(colorCircle, addButton);
+    }
+}
+
+// Call the function to retrieve custom color when the page loads
+window.onload = function() {
+    retrieveCustomColor();
+};
+
 
 window.onload = function() {
   var storedColors = JSON.parse(localStorage.getItem('customColors'));
@@ -1850,16 +1867,26 @@ window.onload = function() {
 
  
 
- function incrementCounter() {
-      // Get the current counter value from localStorage or initialize it to 0
-      var currentValue = parseInt(localStorage.getItem('counter')) || 0;
-      // Increment the counter value by 1
-      currentValue++;
-      // Update the counter value in localStorage
-      localStorage.setItem('counter', currentValue);
-      // Update the counter value on the page
-      document.getElementById('counter').textContent = currentValue;
-    }
+ var isFunctionAllowed = true;
+
+function incrementCounter() {
+    if (!isFunctionAllowed) return; // Check if function is allowed to run
+    isFunctionAllowed = false; // Set function to not allowed
+
+    var currentValue = parseInt(localStorage.getItem('counter')) || 0;
+    // Increment the counter value by 1
+    currentValue++;
+    // Update the counter value in localStorage
+    localStorage.setItem('counter', currentValue);
+    // Update the counter value on the page
+    document.getElementById('counter').textContent = currentValue;
+
+    // Call setTimeout to schedule the next update after 20 seconds
+    setTimeout(function() {
+        isFunctionAllowed = true; // Set function to allowed after 20 seconds
+    }, 5000); // 20 seconds in milliseconds
+}
+
 
 
 
