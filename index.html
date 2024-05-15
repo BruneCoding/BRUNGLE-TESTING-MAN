@@ -1777,18 +1777,6 @@ function changeColor(color) {
     document.body.style.backgroundImage = "";
 }
 
-           document.addEventListener('DOMContentLoaded', function(){
-  //Check and apply bg colour/image
-  backgroundValue = getCookie('currentBG');
-  if (backgroundValue === null || backgroundValue === undefined || backgroundValue === "") {
-    setCookie('currentBG', '#036b52', 365);
-  } else if (backgroundValue.startsWith('http')) {
-    changeBGimage(backgroundValue);
-  } else if (backgroundValue.startsWith('#')) {
-    changeColor(backgroundValue)
-  } else {
-    console.error("invalid background: " + backgroundValue);
-  }
 
 function showCustomColor() {
     var customColorInput = document.getElementById('custom-color');
