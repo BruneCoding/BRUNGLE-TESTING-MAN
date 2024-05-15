@@ -1794,6 +1794,7 @@ document.addEventListener('DOMContentLoaded', function() {
  
 function changeColor(color) {
    setCookie('currentBG', color, 365); document.body.style.backgroundColor = color;
+    document.body.style.backgroundImage = "";
 }
 
 function showCustomColor() {
