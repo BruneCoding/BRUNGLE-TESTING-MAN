@@ -132,6 +132,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+      transition: background-image 0.5s ease-in-out;
 
   /* change this to your background color choice */
   }
@@ -944,6 +945,7 @@ color: #199b19;
              <div class="color-circle" style="background-image: url('https://www.chromethemer.com/blog/images/uhd-wallpaper-backgrounds-1.jpg')" onclick="themeFluid()"></div>
              <div class="color-circle" style="background-image: url('https://t4.ftcdn.net/jpg/03/34/19/13/360_F_334191354_zW1Fj9HPbfJdBPEVe2d6mcuT1w2g8K5y.jpg')" onclick="themeDesert()"></div>
              <div class="color-circle" style="background-image: url('https://miro.medium.com/v2/resize:fit:1400/1*yrppiCrEctYSXk2ZRiZ7VQ.gif')" onclick="themeGame()"></div>
+             <div class="color-circle" style="background-image: url('https://cd2.boardgamesmaker.com/AttachFiles/WebsiteImages/Product_Show/FI_8807.jpg')" onclick="themeRandom()"></div>
          </wand>
            <br>
            <hr>
@@ -2523,6 +2525,29 @@ updateClock();
        function themeGame() {
            document.body.style.backgroundImage = "url('https://miro.medium.com/v2/resize:fit:1400/1*yrppiCrEctYSXk2ZRiZ7VQ.gif')";
            document.body.style.backgroundSize = "100vw auto";
+       }
+
+       // Array containing the URLs of the images
+        const imageUrls = [
+            "https://wallpaperxyz.com/wp-content/uploads/Gif-Animated-Wallpaper-Background-Full-HD-Free-Download-for-PC-Macbook-261121-Wallpaperxyz.com-31.gif",
+            "https://e0.pxfuel.com/wallpapers/51/641/desktop-wallpaper-chill-fox-music-chill-beats-you-ll-love-for-computer-background-chill-cool-for-computer-chill-aesthetic.jpg",
+            "https://wallpapercave.com/wp/wp2510496.gif",
+            "https://i.redd.it/tnva3hgpheu71.gif",
+            "https://pcsite.co.uk/wp-content/uploads/2023/12/roblox-wallpaper.jpg"
+        ];
+
+        let currentIndex = 0;
+
+
+       function themeRandom() {
+           document.body.style.backgroundSize = "100vw auto";
+
+          // Set background image
+            document.body.style.backgroundImage = `url('${imageUrls[currentIndex]}')`;
+
+            // Increment index for next image
+            currentIndex = (currentIndex + 1) % imageUrls.length;
+           setInterval(themeRandom, 10000);
        }
      
      //toggles to next
