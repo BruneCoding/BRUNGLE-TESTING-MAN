@@ -132,7 +132,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-      transition: background-image 0.5s ease-in-out;
 
   /* change this to your background color choice */
   }
@@ -945,7 +944,6 @@ color: #199b19;
              <div class="color-circle" style="background-image: url('https://www.chromethemer.com/blog/images/uhd-wallpaper-backgrounds-1.jpg')" onclick="themeFluid()"></div>
              <div class="color-circle" style="background-image: url('https://t4.ftcdn.net/jpg/03/34/19/13/360_F_334191354_zW1Fj9HPbfJdBPEVe2d6mcuT1w2g8K5y.jpg')" onclick="themeDesert()"></div>
              <div class="color-circle" style="background-image: url('https://miro.medium.com/v2/resize:fit:1400/1*yrppiCrEctYSXk2ZRiZ7VQ.gif')" onclick="themeGame()"></div>
-             <div class="color-circle" style="background-image: url('https://cd2.boardgamesmaker.com/AttachFiles/WebsiteImages/Product_Show/FI_8807.jpg')" onclick="themeRandom()"></div>
          </wand>
            <br>
            <hr>
@@ -1117,6 +1115,7 @@ color: #199b19;
   </table>
   </div>
   </section>
+  
   <section class="eight-six" style="display: none">
     <button class="toggle-button"onclick="toggleEightSix()">Toggle Tables</button>
     <br>
@@ -1779,12 +1778,35 @@ function changeColor(color) {
     document.body.style.backgroundImage = "";
 }
 
-
 function showCustomColor() {
     var customColorInput = document.getElementById('custom-color');
     customColorInput.style.display = 'inline-block';
 }
+function loadColors() {
+    var transaction = db.transaction(['colors'], 'readonly');
+    var objectStore = transaction.objectStore('colors');
+    var request = objectStore.getAll();
 
+    request.onsuccess = function(event) {
+        var colors = event.target.result;
+        colors.forEach(function(colorObj) {
+            var colorCircle = document.createElement('div');
+            colorCircle.className = 'color-circle';
+            colorCircle.style.backgroundColor = colorObj.color;
+            colorCircle.addEventListener('click', function() {
+                changeColor(colorObj.color);
+            });
+            var addButton = document.getElementById('add-button');
+            document.getElementById('theme-changer').insertBefore(colorCircle, addButton);
+        });
+    };
+
+    request.onerror = function(event) {
+        console.error('Error loading colors from IndexedDB:', event.target.errorCode);
+    };
+}
+
+         
 function addCustomColor() {
     var customColorInput = document.getElementById('custom-color');
     var customColor = customColorInput.value;
@@ -1800,12 +1822,42 @@ function addCustomColor() {
         customColorInput.value = '';
         customColorInput.style.display = 'none';
 
-        // Save custom color to localStorage
-        localStorage.setItem('customColor', customColor);
+        // Save custom color to IndexedDB
+        var transaction = db.transaction(['colors'], 'readwrite');
+        var objectStore = transaction.objectStore('colors');
+        var request = objectStore.add({ color: customColor });
+
+        request.onsuccess = function(event) {
+            console.log('Color added to IndexedDB:', customColor);
+        };
+
+        request.onerror = function(event) {
+            console.error('Error adding color to IndexedDB:', event.target.errorCode);
+        };
     } else {
         alert('Please enter a valid hex color code.');
     }
 }
+
+         let db;
+const request = indexedDB.open('ColorDB', 1);
+
+request.onupgradeneeded = function(event) {
+    db = event.target.result;
+    if (!db.objectStoreNames.contains('colors')) {
+        db.createObjectStore('colors', { keyPath: 'id', autoIncrement: true });
+    }
+};
+
+request.onsuccess = function(event) {
+    db = event.target.result;
+    loadColors();
+};
+
+request.onerror = function(event) {
+    console.error('IndexedDB error:', event.target.errorCode);
+};
+
 
 // Function to retrieve saved custom color on page load
 function retrieveCustomColor() {
@@ -2497,10 +2549,8 @@ updateClock();
    </script>
    <script>
    document.getElementById('change-bg-btn').addEventListener('click', function() {
-       setCookie('currentBG', url, 365);
   var imageUrl = prompt("Enter the URL of the image you want as background:");
   if (imageUrl) {
-      
     document.body.style.backgroundImage = "url('" + imageUrl + "')";
     document.body.style.backgroundSize = "100vw auto"; // Set background width to 100vw
   }
@@ -2525,39 +2575,6 @@ updateClock();
        function themeGame() {
            document.body.style.backgroundImage = "url('https://miro.medium.com/v2/resize:fit:1400/1*yrppiCrEctYSXk2ZRiZ7VQ.gif')";
            document.body.style.backgroundSize = "100vw auto";
-       }
-
-       // Array containing the URLs of the images
-        const imageUrls = [
-            "https://wallpaperxyz.com/wp-content/uploads/Gif-Animated-Wallpaper-Background-Full-HD-Free-Download-for-PC-Macbook-261121-Wallpaperxyz.com-31.gif",
-            "https://e0.pxfuel.com/wallpapers/51/641/desktop-wallpaper-chill-fox-music-chill-beats-you-ll-love-for-computer-background-chill-cool-for-computer-chill-aesthetic.jpg",
-            "https://wallpapercave.com/wp/wp2510496.gif",
-            "https://i.redd.it/tnva3hgpheu71.gif",
-            "https://pcsite.co.uk/wp-content/uploads/2023/12/roblox-wallpaper.jpg",
-            "https://i.pinimg.com/originals/a7/07/f0/a707f04abbdcf93b9dcc4916a5d3059c.gif",
-            "https://cdn.dribbble.com/users/4194651/screenshots/7384705/google-rex-animated-gif.gif",
-            "https://i.pinimg.com/originals/eb/e6/8e/ebe68e74c1c2fac7dac5650e33821165.gif",
-            "https://i.pinimg.com/originals/39/02/65/390265a5fc95103c9aac970ce291943a.gif",
-            "https://j.gifs.com/mGlEGw.gif",
-            "https://media0.giphy.com/media/Yh0qLwfpAogL9vVxhL/200w.gif?cid=6c09b952mkx4yern26m0k6mct8tj2pa4rlntgp5wdsm0wu4t&ep=v1_gifs_search&rid=200w.gif&ct=g",
-            "https://media1.giphy.com/media/h71k5t5eo4ZaDMgzbs/200w.gif?cid=6c09b952mkx4yern26m0k6mct8tj2pa4rlntgp5wdsm0wu4t&ep=v1_gifs_search&rid=200w.gif&ct=g",
-            "https://media4.giphy.com/media/r8GMmlV8qGrfZ3txfX/giphy.gif?cid=6c09b952mkx4yern26m0k6mct8tj2pa4rlntgp5wdsm0wu4t&ep=v1_gifs_search&rid=giphy.gif&ct=g",
-            "https://i.pinimg.com/originals/7f/2d/1b/7f2d1baa0a92449ec2bbc21772a36762.gif",
-            "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/07ca6eb0-5f29-4385-9e34-172ddf7d1975/d8uy0ue-28645437-e553-45d9-b1d7-b8b42b6bc505.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzA3Y2E2ZWIwLTVmMjktNDM4NS05ZTM0LTE3MmRkZjdkMTk3NVwvZDh1eTB1ZS0yODY0NTQzNy1lNTUzLTQ1ZDktYjFkNy1iOGI0MmI2YmM1MDUuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.3SuUcfpTqSdXyOk5T47aanM6OKf1ZVE-svtVYI_2lEs"
-        ];
-
-        let currentIndex = 0;
-
-
-       function themeRandom() {
-           document.body.style.backgroundSize = "100vw auto";
-
-          // Set background image
-            document.body.style.backgroundImage = `url('${imageUrls[currentIndex]}')`;
-
-            // Increment index for next image
-            currentIndex = (currentIndex + 1) % imageUrls.length;
-           setInterval(themeRandom, 10000);
        }
      
      //toggles to next
@@ -2649,6 +2666,7 @@ const eightThree = document.querySelector('.eight-three');
 const eightFour = document.querySelector('.eight-four');
 const eightFive = document.querySelector('.eight-five');
 const eightSix = document.querySelector('.eight-six');
+     const customTable = document.querySelector('.eight-custom');
 
 function eightOneChange() {
   eightOne.style.display = "block";
@@ -2705,7 +2723,8 @@ function eightSixChange() {
 }
 
 function createTimetable() {
-  alert('Not Implemented YET!')
+  alert('Redirecting to a temporary website. This is because, to limit issues with code, disrupting other Brungle services, the dev team ( me ) have decided to move all "experimental", "beta" and "new" features to temporary sites until all bugs have been cleared. Appreciation to your understanding. Ok to proceed ... ');
+  window.location.href = "https://temporary-timetable-custom-brungle.pages.dev/";
 }
      
      function sleep(ms) {
@@ -2739,6 +2758,8 @@ function getCookie(cname) {
   }
   return "";
 }
+     
+     alert('UPDATE! COLORS NOW WILL SAVE... WORKING ON BG SAVE');
        
 
     </script>
